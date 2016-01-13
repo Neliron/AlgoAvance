@@ -19,15 +19,15 @@ public class Metaheuristic {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int[] sys = {1,2,3,4,5};
-		int[][] subSys = {{1,2},{2,3},{3,4},{4,5}};
-		int[] cost = {2,4,6,8};
+		int[] sys = {1,2,3,4,5,6};
+		int[][] subSys = {{1,2},{2,3},{3,4},{4,5},{1,5,6}};
+		int[] cost = {2,4,6,8,2};
 		Metaheuristic meta = new Metaheuristic(sys, subSys, cost);
 		meta.metaRasPSSCPConstruction(sys, subSys, 20, 10);
 		for(int i=0; i<meta.solutions.length; i++){
 			System.out.println("Solution = " + Arrays.toString(meta.solutions[i]));
 		}
-		System.out.println("Coûts = " + Arrays.toString(meta.solutionsCost));
+		System.out.println("Couts = " + Arrays.toString(meta.solutionsCost));
 	}
 	
 	public Metaheuristic(int[] system, int[][] subSystems, int[] cost){
@@ -89,10 +89,8 @@ public class Metaheuristic {
 									presenceInOtherArray[j] = true;
 								}
 							}
-							
 						}
 					}
-					
 				}
 				for(int k=0; k<presenceInOtherArray.length; k++){
 					if(presenceInOtherArray[k] == false){
@@ -100,7 +98,7 @@ public class Metaheuristic {
 					}
 				}
 			}
-			int indexToDelete = 0, uselessMaxCost = 0;
+			int indexToDelete = -1, uselessMaxCost = 0;
 			for(int i=0; i<this.solutions.length; i++){
 				if(!usefull[i]){
 					if(this.solutionsCost[i] >= uselessMaxCost){
@@ -109,8 +107,10 @@ public class Metaheuristic {
 					}
 				}
 			}
-			this.solutions = this.deleteColumn(this.solutions, indexToDelete);
-			this.solutionsCost = this.deleteCost(this.solutionsCost, indexToDelete);
+			if(indexToDelete >= 0){
+				this.solutions = this.deleteColumn(this.solutions, indexToDelete);
+				this.solutionsCost = this.deleteCost(this.solutionsCost, indexToDelete);
+			}
 			int offset = 0;
 			for(int i=0; i<this.solutions.length; i++){
 				if(indexToDelete == i){
@@ -161,8 +161,6 @@ public class Metaheuristic {
 	public int[][] deleteColumn(int[][] array, int col){
 		int offset = 0;
 		int[][] tmp = array;
-		System.out.println("tmp = " + tmp);
-		System.out.println("array = " + array);
 		array = new int[tmp.length-1][];
 		for(int i=0; i<array.length;i++){
 			if(i == col){
